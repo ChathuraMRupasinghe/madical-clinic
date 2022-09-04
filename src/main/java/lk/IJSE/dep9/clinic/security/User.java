@@ -1,6 +1,9 @@
 package lk.IJSE.dep9.clinic.security;
 
 public class User {
+
+
+
     private String username;
     private UserRole role;
 
@@ -25,6 +28,13 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                '}';
     }
 
 
