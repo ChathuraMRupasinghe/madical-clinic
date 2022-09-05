@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import lk.IJSE.dep9.clinic.misc.PasswordHashDemo;
 import lk.IJSE.dep9.clinic.security.SecurityContextHolder;
 import lk.IJSE.dep9.clinic.security.User;
 import lk.IJSE.dep9.clinic.security.UserRole;
@@ -51,14 +52,21 @@ public class LoginFormController {
 //
 //            Statement stm = connection.createStatement();
 //            ResultSet rst = stm.executeQuery(sql);
-            String sql = "SELECT role FROM User WHERE username=? AND password=?";
+            String sql = "SELECT role,password FROM User WHERE username=?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1,userName);
-            stm.setString(2,password);
             ResultSet rst = stm.executeQuery();
 
             if (rst.next()){
-           String role= rst.getString("role");
+           String cipherText= rst.getString("password");
+
+           if (!PasswordHashDemo.getSha256Hex(password).equals(cipherText)){
+               new Alert(Alert.AlertType.ERROR, "Invalid login credentials").show();
+               txtName.requestFocus();
+               txtName.selectAll();
+               return;
+           }
+           String role = rst.getString("role");
            SecurityContextHolder.setPrinciple(new User(userName, UserRole.valueOf(role)));
         Scene scene = null;
         switch (role){
