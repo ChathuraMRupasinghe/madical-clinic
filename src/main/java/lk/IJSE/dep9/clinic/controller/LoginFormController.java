@@ -46,13 +46,18 @@ public class LoginFormController {
         Class.forName("com.mysql.cj.jdbc.Driver");
         try(Connection connection = DriverManager.
                 getConnection("jdbc:mysql://localhost:3306/medical_clinic", "root", "61087912@Cha");){
-            String sql = "SELECT role FROM User WHERE username='%s' AND password='%s'";
-            sql = String.format(sql, userName, password);
+//            String sql = "SELECT role FROM User WHERE username='%s' AND password='%s'";
+//            sql = String.format(sql, userName, password);
+//
+//            Statement stm = connection.createStatement();
+//            ResultSet rst = stm.executeQuery(sql);
+            String sql = "SELECT role FROM User WHERE username=? AND password=?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1,userName);
+            stm.setString(2,password);
+            ResultSet rst = stm.executeQuery();
 
-            Statement stm = connection.createStatement();
-            ResultSet rst = stm.executeQuery(sql);
-
-       if (rst.next()){
+            if (rst.next()){
            String role= rst.getString("role");
            SecurityContextHolder.setPrinciple(new User(userName, UserRole.valueOf(role)));
         Scene scene = null;
